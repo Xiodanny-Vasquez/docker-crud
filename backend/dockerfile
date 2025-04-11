@@ -1,0 +1,21 @@
+# Usa Node.js como base
+FROM node:18
+
+# Instala netcat para wait-for-mysql.sh
+RUN apt-get update && apt-get install -y netcat-openbsd
+
+# Crea directorio de trabajo
+WORKDIR /app
+
+# Copia package.json e instala dependencias
+COPY package*.json ./
+RUN npm install
+
+# Copia el resto de la app
+COPY . .
+
+# Expone el puerto (ajústalo si usas otro)
+EXPOSE 3001
+
+# Ejecuta el script que espera MySQL antes de arrancar el backend
+CMD ["sh", "./wait-for-mysql.sh"]
